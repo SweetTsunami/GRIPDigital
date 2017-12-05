@@ -6,68 +6,87 @@
 
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Chunk : MonoBehaviour
 {
-    public int chunkSize = 20;  
+    /// <summary>
+    /// set the X and Z size of the chunk -> it's square
+    /// </summary>
+    public int ChunkSize = 20;  
 
-    public GameObject[] blockPrefab;
-    
-    public int heightOffset = 5;
-    public int widthOffset = 5;
+    /// <summary>
+    /// Array of block prefabs
+    /// </summary>
+    public GameObject[] BlockPrefab;
+    World World;
 
-    public float scale = 25.0f;
+    public int HeightOffset = 5;
+    public int WidthOffset = 5;
 
+    public float Scale = 25.0f;
+
+    /// <summary>
+    /// Start CreateChunk coroutine the moment chunk object spawns
+    /// </summary>
     private void Awake()
     {        
         StartCoroutine(CreateChunk());
     }
     
+    /// <summary>
+    /// Creates chunk -> ammount of blocks dendant on ChunkSize
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CreateChunk()
     {
-        for (int x = 0; x <= chunkSize; x++)
+        // Two for cycles, one for x and z coords
+        for (int x = 0; x <= ChunkSize; x++)
         {
-            for (int z = 0; z <= chunkSize; z++)
+            for (int z = 0; z <= ChunkSize; z++)
             {
-                var xCoord = widthOffset + (transform.position.x + x + World.seed) / scale;
-                var yCoord = heightOffset + (transform.position.z + z + World.seed) / scale;
-                var value = Mathf.PerlinNoise(xCoord, yCoord);
-                value = Mathf.RoundToInt(value * 10);
-                var blockPos = new Vector3(transform.position.x + x, value, transform.position.z + z);
-                for (int i = 0; i < 1/*blockPrefab.Length*/; i++) //how many layers
+                // Setup of PerlinNoise function
+                var xCoord = WidthOffset + (transform.position.x + x + World.seed) / Scale;
+                var yCoord = HeightOffset + (transform.position.z + z + World.seed) / Scale;
+
+                // PerlinNoise dictates the Y position of the block and 
+                var y = Mathf.PerlinNoise(xCoord, yCoord);
+                // Make the value more impactful
+                y = Mathf.RoundToInt(y * 10);
+                // Calculate the position of the Block
+                var blockPos = new Vector3(transform.position.x + x, y, transform.position.z + z);
+
+                // For cycle to generate different types of cubes base on chance
+                for (int i = 0; i < 1/*BlockPrefab.Length*/; i++) //how many layers
                 {
-                    value--;
-                    blockPos = new Vector3(transform.position.x + x, value, transform.position.z + z);
+                    y--;
+                    // Recalculate it to make it under the previous one
+                    blockPos = new Vector3(transform.position.x + x - (ChunkSize /2), y, transform.position.z + z - (ChunkSize / 2));
+
+                    // Pick random number
                     int pickBlock = Random.Range(0, 100);
                     if (pickBlock < 50) 
-                        CreateBlock(blockPos, blockPrefab[0]);
+                        CreateBlock(blockPos, BlockPrefab[0]);
                     else if (50 < pickBlock && pickBlock < 70)
-                        CreateBlock(blockPos, blockPrefab[1]);
+                        CreateBlock(blockPos, BlockPrefab[1]);
                     else if (70 < pickBlock && pickBlock < 95)
-                        CreateBlock(blockPos, blockPrefab[2]);
+                        CreateBlock(blockPos, BlockPrefab[2]);
                     else if (95 < pickBlock)
-                        CreateBlock(blockPos, blockPrefab[3]);
+                        CreateBlock(blockPos, BlockPrefab[3]);
                 }
             }
             yield return null;
         }
     }
 
+    /// <summary>
+    /// Creates a block
+    /// </summary>
+    /// <param name="blockPos">Position of spawned block </param>
+    /// <param name="prefab">Prefab of the block to spawn</param>
     void CreateBlock(Vector3 blockPos, GameObject prefab)
     {
         GameObject block = Instantiate(prefab, blockPos, Quaternion.identity);
         block.transform.SetParent(transform, false);
         block.transform.position = blockPos;
     }
-
-
-    //private void OnCollisionExit(Collision col)
-    //{
-    //    Debug.Log(this + " chunk exited detector ");
-    //    if (col.gameObject.GetComponent<SphereDetector>())
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //}
 }

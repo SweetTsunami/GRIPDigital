@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// Generic Detector Script (Detects Generic Faction Objects)
+/// Sphere detector script, for finding chunks and possibly other things
 /// </summary>
 public class SphereDetector : MonoBehaviour
 {
-    // Detection parameters
+    // Detection parameters, the highest number is way overboard, but just to 
+    // how far
     [SerializeField]
     [Range(0, 1000)]
     private float _detectionRange = 15.0f;
     public float DetectionRange { get { return _detectionRange; } }
 
+    // how often
     [SerializeField]
     [Range(0, 5)]
     private float _detectionRate = 0.1f;
     public float DetectionRate { get { return _detectionRate; }   }
         
+    // list of chunks in the range
     public List<Chunk> ChunksInRange = new List<Chunk>();
    
     // Debug
@@ -28,28 +31,39 @@ public class SphereDetector : MonoBehaviour
         InvokeRepeating("DetectChunksObjects", 0.0f, _detectionRate);
     }
 
+    /// <summary>
+    /// Checks positions in range
+    /// </summary>
+    /// <param name="positions">List of positions</param>
+    /// <returns>Returns the list of positions in range</returns>
     public List<Position> CheckPositionsInRange(List<Position> positions)
     {
+        // List of positions in range (empty)
         List<Position> positionsInRange = new List<Position>();
+
+        // cycles thorugh positions to fill the List positionsInRange
         foreach (var pos in positions)
-        {// yeah so how do we make them spawn in negative ? or spawn player somewhere in the middle ?
+        {
+            // if the position is within detection range, add it to the list
             if (Vector3.Distance(pos.WorldPosition, transform.position) < _detectionRange)
             {
                 positionsInRange.Add(pos);
             }
         }
+
+        // return the list with positions
         return positionsInRange;
     }
 
     /// <summary>
-    /// Detects Faction Objects in Range
+    /// Detects Chunks Range
     /// </summary>
     public void DetectChunksObjects()
     {
-        // Clear previous detected characters
+        // Clear previous detected chunks
         ChunksInRange.Clear();
-        
-        // Detect all characters in range
+
+        // Detect all chunks in range
         var hitColliders = Physics.OverlapSphere(transform.position, _detectionRange);
         var i = 0;
         while (i < hitColliders.Length)
@@ -62,10 +76,10 @@ public class SphereDetector : MonoBehaviour
                 continue;
             }
 
-            //Check if the object has a faction
+            //Check if the object has a chunk
             var currentObject = hitColliders[i].GetComponent<Chunk>();
 
-            //Organize the detected factions
+            //Organize the detected chunks
             if (currentObject != null)
             {
                 ChunksInRange.Add(currentObject);
