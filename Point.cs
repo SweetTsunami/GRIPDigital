@@ -1,5 +1,15 @@
-﻿using System;
+﻿/*  File:       Point.cs
+ *  Creator:    Alexander Semenov
+ *  Date:       December 2017 
+ *  Location:   Brno, Czech Republic
+ *  Project:    GRIP Digital Showcase project - Primitive Minecraft Clone
+ *  Desc:       Used by Game.cs to create grid for proper Chunk placing
+ *  Usage:      Just include this in the solution
+ */
+
 using UnityEngine;
+
+using System;
 
 [Serializable]
 // A Point consists of x,y coordinates that are usually represented in x,z space.

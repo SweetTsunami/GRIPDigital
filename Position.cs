@@ -1,4 +1,13 @@
-﻿using UnityEngine;
+﻿/*  File:       Position.cs
+ *  Creator:    Alexander Semenov
+ *  Date:       December 2017 
+ *  Location:   Brno, Czech Republic
+ *  Project:    GRIP Digital Showcase project - Primitive Minecraft Clone
+ *  Desc:       Pure Class used by Game.cs to determine the corect locations of chunks
+ *  Usage:      Just include this in the project
+ */
+
+using UnityEngine;
 
 /// <summary>
 /// Position class to store the information about positions (Vector3) 

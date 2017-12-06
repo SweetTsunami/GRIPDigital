@@ -1,4 +1,16 @@
-﻿using UnityEngine;
+﻿/*  File:       SphereDetector.cs
+ *  Creator:    Alexander Semenov
+ *  Date:       December 2017 
+ *  Location:   Brno, Czech Republic
+ *  Project:    GRIP Digital Showcase project - Primitive Minecraft Clone
+ *  Desc:       Spherical detector used by Game.cs to properly handle the
+ *              Chunks within and out of view range
+ *  Usage:      Put this onto same object as Game.cs      
+ *              Set values, be careful with detection range as Chunk and thus Block generation
+ *              relies on it, if you set it too high, too many Blocks will be generated.
+ */
+
+using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
@@ -6,10 +18,10 @@ using System.Collections.Generic;
 /// </summary>
 public class SphereDetector : MonoBehaviour
 {
-    // Detection parameters, the highest number is way overboard, but just to 
+    // Detection parameters
     // how far
     [SerializeField]
-    [Range(0, 1000)]
+    [Range(0, 100)]
     private float _detectionRange = 15.0f;
     public float DetectionRange { get { return _detectionRange; } }
 
